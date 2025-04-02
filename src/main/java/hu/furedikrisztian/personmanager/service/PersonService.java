@@ -8,8 +8,6 @@ import hu.furedikrisztian.personmanager.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,19 +49,18 @@ public class PersonService {
         personRepo.delete(person);
     }
 
-    // Üzleti logika: Új cím hozzáadása egy személyhez, 2 cím limit figyelembevételével
     public Address addAddressToPerson(Long personId, Address newAddress) {
-        Person person = getPersonById(personId);
-        List<Address> addressList = new ArrayList<>();
-        addressList.add(newAddress);
-        if (person.getAddresses().size() >= 2) {
-            throw new IllegalStateException("Egy személynél legfeljebb 2 cím rögzíthető (limit túllépve)!");
+        if (canSaveTheAddress(personId, newAddress)) {
+            addressRepo.save(newAddress);
+        } else {
+            throw new IllegalStateException("A személynek ID: " + personId + " már van " + newAddress.getType().toString() + " típusú címe rögzítve. ");
         }
-        // opcionális: ellenőrizhetjük, hogy ugyanilyen típusú cím már létezik-e ennél a személynél
-        person.setAddresses(addressList);
-        // mentjük a új cím entitást (a cascadelés miatt elég a person mentése is)
-        addressRepo.save(newAddress);
         return newAddress;
+    }
+
+    private boolean canSaveTheAddress(Long personId, Address newAddress) {
+        return getPersonById(personId).getAddresses().stream()
+                .noneMatch(address -> address.getType().equals(newAddress.getType()));
     }
 
     public void removeAddressFromPerson(Long personId, Long addressId) {
