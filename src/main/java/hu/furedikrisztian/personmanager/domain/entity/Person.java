@@ -34,7 +34,7 @@ public class Person {
 
     }
 
-    // Segédmetódus cím hozzáadásához
+
     public void addAddress(Address address) {
         addresses.add(address);
         address.setPerson(this);

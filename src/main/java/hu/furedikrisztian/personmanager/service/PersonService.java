@@ -32,15 +32,12 @@ public class PersonService {
     }
 
     public Person createPerson(Person person) {
-        // Új személy mentése (üres címlistával indul)
         return personRepo.save(person);
     }
 
     public Person updatePerson(Long id, Person updatedData) {
         Person person = getPersonById(id);
-        // Frissítjük a mezőket
         person.setName(updatedData.getName());
-        // (Esetleg címeket is frissíthetnénk itt, de azt külön végzzük egy másik metódusban)
         return personRepo.save(person);
     }
 
@@ -65,13 +62,11 @@ public class PersonService {
 
     public void removeAddressFromPerson(Long personId, Long addressId) {
         Person person = getPersonById(personId);
-        // Megkeressük a megfelelő címet a személy címlistájából
         Optional<Address> addressOpt = person.getAddresses().stream()
                 .filter(addr -> addr.getId().equals(addressId))
                 .findFirst();
         Address address = addressOpt.orElseThrow(() ->
                 new ResourceNotFoundException("A törölni kívánt cím nem található a személynél (id=" + addressId + ")"));
-        // Eltávolítjuk a személy cím listájából – orphanRemoval miatt automatikusan törlődik az adatbázisból is
         person.removeAddress(address);
     }
 }
