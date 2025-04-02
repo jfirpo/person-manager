@@ -1,10 +1,8 @@
-package hu.furedikrisztian.personmanager.domain;
+package hu.furedikrisztian.personmanager.domain.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -21,9 +19,11 @@ public class Contact {
     @Column(nullable = false)
     private String contactValue;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     @JsonIgnore  // nehogy visszafelé a cím adatait is beágyazzuk JSON-be
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Address address;
 
 }

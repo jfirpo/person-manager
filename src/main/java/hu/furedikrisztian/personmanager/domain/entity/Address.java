@@ -1,10 +1,10 @@
-package hu.furedikrisztian.personmanager.domain;
+package hu.furedikrisztian.personmanager.domain.entity;
 
+import hu.furedikrisztian.personmanager.domain.entity.enums.AddressType;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +18,32 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private AddressType type;
 
+    @NotBlank
     @Column(nullable = false)
     private String city;
+
+    @NotBlank
     @Column(nullable = false)
     private String street;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Person person;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Contact> contacts = new ArrayList<>();
 
+    public Address(AddressType addressType, String city, String street) {
+        this.type = addressType;
+        this.city = city;
+        this.street = street;
+    }
 }
