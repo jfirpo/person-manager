@@ -1,8 +1,8 @@
-CREATE TABLE persons (
+CREATE TABLE person(
                          id BIGINT IDENTITY PRIMARY KEY,
                          name VARCHAR(255) NOT NULL
 );
-CREATE TABLE addresses (
+CREATE TABLE address (
                            id BIGINT IDENTITY PRIMARY KEY,
                            type VARCHAR(20) NOT NULL,
                            city VARCHAR(100) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE addresses (
                            person_id BIGINT NOT NULL,
                            CONSTRAINT FK_person FOREIGN KEY(person_id) REFERENCES persons(id)
 );
-CREATE TABLE contacts (
+CREATE TABLE contact (
                           id BIGINT IDENTITY PRIMARY KEY,
                           contact_type VARCHAR(50) NOT NULL,
                           contact_value VARCHAR(255) NOT NULL,
